@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{% block title %} {{ post['title'] }} {% endblock %}</h2>
+    <a href="{{ url_for('edit', id=post['id']) }}">
+            <span class="badge badge-warning">Edit</span>
+        </a>
+    <span class="badge badge-primary">{{ post['created'] }}</span>
+    <p>{{ post['content'] }}</p>
+
+    <form action="{{ url_for('like', id=post['id']) }}" method="POST">
+        <button type="submit" class="btn btn-danger" ><i class="bi bi-hand-thumbs-up"></i>{{ post['likes'] }}</button>
+    </form>
+    <p>{{ post['comments'] }}</p>
+    <form action="{{ url_for('comment', id=post['id']) }}">
+        <button type="submit" class="btn btn-danger" >Add your comment!) </button>
+    </form>
+
+{% endblock %}

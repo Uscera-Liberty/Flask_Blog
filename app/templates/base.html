@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>{% block title %} {% endblock %}</title>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <a class="navbar-brand" href="{{ url_for('draw_main_page')}}">CatsBlog</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ url_for('about')}}">About</a>
+            </li>
+
+            <li class="nav-item">
+            <a class="nav-link" href="{{url_for('create')}}">New Post</a>
+            </li>
+
+            <li class="nav-item">
+            <a class="nav-link" href="{{url_for('register_user')}}">Registration</a>
+            </li>
+
+            </ul>
+        </div>
+    </nav>
+
+
+
+    <style>
+        .carousel-item{
+            background-color: rgba(39,47,51, 0.5);
+        }
+        .counteiner_text{
+            color: white;
+            background-color: rgba(39,47,51, 0.5);
+            position: absolute;
+            right:20px;
+            left:900px;
+            padding: 10px;
+        }
+        .carousel-inner{
+            width:98%;
+            height: 32rem;
+            left:20px;
+            right:10px
+        }
+        .header_text{
+            position: relative;
+            right:35px;
+            left:35px;
+            color: black;
+        }
+    </style>
+     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+  <ol class="carousel-indicators">
+    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+  </ol>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+        <div class = counteiner_text>
+            <h2>Cats!Cats!Cats</h2>
+            <p>Ко́шка (лат. Felis catus) — домашнее животное, одно из наиболее популярных(наряду с собакой) «животных-компаньонов».
+С точки зрения научной систематики, домашняя кошка — млекопитающее семейства кошачьих отряда хищных.</p>
+        </div>
+      <img class="d-block w-100" src="https://w-dog.ru/wallpapers/5/16/293857227813431/britanskaya-korotkosh-rstnaya-britanec-kot-koshka-morda.jpg" alt="First slide">
+    </div>
+
+    <div class="carousel-item">
+        <div class = counteiner_text>
+            <p>В русском языке слово кошка означает либо представителя биологического вида Felis catus вообще независимо от пола, либо самку этого вида. Самца называют кот, а детёныша кошки — котёнок (мн. ч. котя́та).
+                Слово «кошка» в русском языке является диминутивом от др.-русск. слова «котъка», которое в свою очередь
+                происходит от существительного «кот» и является родственным лат. cattus — кошка.</p>
+        </div>
+      <img class="d-block w-100" src="https://w-dog.ru/wallpapers/5/18/289291145046987/evropejskaya-koshka-dikij-kot-morda-vzglyad.jpg" alt="Second slide">
+    </div>
+    <div class="carousel-item">
+        <div class = counteiner_text>
+            <p>На основании данных, полученных современной филогенетикой, домашняя кошка является одним из пяти подвидов дикой кошки Felis silvestris, и её правильное международное научное название — Felis silvestris catus[5][26].
+                Решение о закреплении за дикой кошкой названия F. silvestris, а за её одомашненным подвидом — названия F. silvestris catus, было принято в 2003 году Международной комиссией по зоологической номенклатуре.</p>
+        </div>
+      <img class="d-block w-100" src="https://tunnel.ru/media/images/2019-03/post/127666/0_cc8cf_7b5ec78c_orig.jpg" alt="Third slide">
+    </div>
+  </div>
+  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        {% block content %} {% endblock %}
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
