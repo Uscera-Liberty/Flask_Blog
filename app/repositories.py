@@ -21,7 +21,6 @@ def get_post(post_id):
     conn.close()
     return post
 
-
 def get_all_posts():
     conn = get_db_connection()
     posts = conn.execute('SELECT * FROM posts').fetchall()
@@ -43,6 +42,21 @@ def update_post(title, content, id):
     conn.execute('UPDATE posts SET title = ?, content = ?'
                  ' WHERE id = ?',
                  (title, content, id))
+    conn.commit()
+    conn.close()
+
+def create_comment(comment):
+    conn = get_db_connection()
+    conn.execute('INSERT INTO users (comment) VALUES (?)',
+                 (comment))
+    conn.commit()
+    conn.close()
+
+
+def create(title,content, id):
+    conn = get_db_connection()
+    conn.execute('INSERT INTO posts (title,content ) VALUES (?,?) WHERE id= ?',
+                 (title,content, id))
     conn.commit()
     conn.close()
 

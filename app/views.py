@@ -2,7 +2,7 @@ from flask import render_template, request, url_for, flash, redirect
 from werkzeug.exceptions import abort
 
 from app.forms import User_registration_form
-from app.repositories import get_all_posts, get_post, add_post, update_post, delete_post, add_user ,get_likes
+from app.repositories import get_all_posts, get_post, add_post, update_post, delete_post, add_user, get_likes
 
 from app import app
 
@@ -17,7 +17,7 @@ def like(id):
     post = get_post(id)
     likes = post['likes'] + 1
     get_likes(id, likes)
-    return redirect(url_for('post', post_id=id))
+    return redirect(url_for('get_blog_post', id=id))
 
 
 @app.route('/<int:id>')
@@ -49,6 +49,16 @@ def create():
 
     return render_template('create.html')
 
+@app.route('/<int:id>/comment', methods=('GET', 'POST'))
+def create_comment(id):
+    post = get_post(id)
+
+    if request.method == 'POST':
+        comment = post['comment']
+        create_comment(comment)
+        return redirect(url_for('get_blog_post'))
+
+    return render_template('comment.html',post=post)
 
 @app.route('/<int:id>/edit', methods=('GET', 'POST'))
 def edit(id):

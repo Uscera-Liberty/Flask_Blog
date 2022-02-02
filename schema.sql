@@ -5,7 +5,8 @@ CREATE TABLE posts (
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     title TEXT NOT NULL,
     likes INTEGER DEFAULT 0,
-    content TEXT NOT NULL
+    content TEXT NOT NULL,
+    comment TEXT NOT NULL
 );
 
 DROP TABLE IF EXISTS users;
