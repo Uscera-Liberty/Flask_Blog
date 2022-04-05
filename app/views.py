@@ -1,10 +1,17 @@
 from flask import render_template, request, url_for, flash, redirect
+from flask_login import login_required, login_user, current_user, logout_user
 from werkzeug.exceptions import abort
+from werkzeug.security import generate_password_hash, check_password_hash
 
-from app.forms import User_registration_form
-from app.repositories import get_all_posts, get_post, add_post, update_post, delete_post, add_user, get_likes
+from app import *
+from app.sql_achemy_repositories import get_post, get_all_posts, update_post, delete_post, add_post, add_user, \
+    get_comments, add_comment, load_user_by_name #get_likes
+from app.forms import User_registration_form, Comment_creation_form, User_login_form
 
-from app import app
+@app.route('/login')
+def personal_cabinet():
+    posts = get_all_posts()
+    return render_template('personal.html', posts=posts)
 
 
 @app.route('/')
@@ -12,23 +19,50 @@ def draw_main_page():
     posts = get_all_posts()
     return render_template('index.html', posts=posts)
 
-@app.route('/<int:id>/like', methods=('POST',))
-def like(id):
-    post = get_post(id)
-    likes = post['likes'] + 1
-    get_likes(id, likes)
-    return redirect(url_for('get_blog_post', id=id))
 
-
-@app.route('/<int:id>')
-def get_blog_post(id):
-    post = get_post(id)
-
+@app.route('/<int:post_id>')
+def post(post_id):
+    post = get_post(post_id)
+    comments = get_comments(post_id)
     if post is None:
         abort(404)
 
-    return render_template('post.html', post=post)
+    return render_template('post.html', post=post, comments=comments)
 
+# @app.route('/<int:id>/like', methods=('POST',))
+# def like(id):
+#     post = get_post(id)
+#     likes = post['likes'] + 1
+#     get_likes(id, likes)
+#     return redirect(url_for('post', id=id))
+
+@app.route('/<int:post_id>/comments/create', methods=('GET', 'POST'))
+#Так , здесь нужно дописать что:
+# 1.вернулть страницу с информацией в about.html и прописать что нужно делать пользователю 1
+# 2.просать верхушки страницы в index html
+# 3.прописать стили для сайта и подредактировать код и посмотреть как все работает
+# 4.такой же код налепить в create ибо неавторизованнным нельзя создавать свои страницы
+# 5. сделать лайки и подредачить код
+# 6. попробовать подумать над логикой сайта что еще можно добавить
+def create_comment(post_id):
+    if current_user.is_authenticated:
+
+        form = Comment_creation_form()
+        user_id = current_user.id
+
+        if form.validate_on_submit():
+            content = form.content.data
+            add_comment(post_id=post_id, content=content , user_id = user_id)
+            return redirect(url_for('post', post_id=post_id))
+
+
+        return render_template('create_comment.html', form=form)
+    else:
+        return redirect(url_for('info'))
+
+@app.route('/info')
+def info():
+    return render_template('info.html')
 
 @app.route('/about')
 def about():
@@ -37,28 +71,21 @@ def about():
 
 @app.route('/create', methods=('GET', 'POST'))
 def create():
-    if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
+    if current_user.is_authenticated:
+        if request.method == 'POST':
+            title = request.form['title']
+            content = request.form['content']
+            user_id = current_user.id
+            if not title:
+                flash('Введите заголовок!')
+            else:
+                add_post(title, content, user_id)
+                return redirect(url_for('draw_main_page'))
 
-        if not title:
-            flash('Введите заголовок!')
-        else:
-            add_post(title, content)
-            return redirect(url_for('draw_main_page'))
+        return render_template('create.html')
+    else:
+        return redirect(url_for('info'))
 
-    return render_template('create.html')
-
-@app.route('/<int:id>/comment', methods=('GET', 'POST'))
-def create_comment(id):
-    post = get_post(id)
-
-    if request.method == 'POST':
-        comment = post['comment']
-        create_comment(comment)
-        return redirect(url_for('get_blog_post'))
-
-    return render_template('comment.html',post=post)
 
 @app.route('/<int:id>/edit', methods=('GET', 'POST'))
 def edit(id):
@@ -97,10 +124,41 @@ def register_user():
         if password != password_again:
             flash('Enter equal passwords!')
         else:
-            print(f'{name} {email}')
-            add_user(name, email, password)
+            password_hash = generate_password_hash(password)
+            add_user(name, email, password_hash)
             return redirect(url_for('draw_main_page'))
 
     return render_template('registration.html', form=form)
 
 
+@app.route('/login/', methods=['post', 'get'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('admin'))
+
+    form = User_login_form()
+#когда пользователь нажимает на кнопку сабмит
+    if form.validate_on_submit():
+        user = load_user_by_name(form.name.data)
+
+        if user and check_password_hash(user.password_hash, form.password.data):
+            login_user(user, remember=True)
+            return redirect(url_for('personal_cabinet'))
+
+        flash("Invalid username/password", 'error')
+        return redirect(url_for('login'))
+
+    return render_template('login.html', form=form)
+
+
+@app.route('/personal_cabinet/')
+@login_required
+def admin():
+    return render_template('personal.html', user = current_user)
+
+@app.route('/logout/')
+@login_required
+def logout():
+    logout_user()
+    flash("You have been logged out.")
+    return redirect(url_for('login'))

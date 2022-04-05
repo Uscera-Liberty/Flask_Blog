@@ -7,29 +7,17 @@
         </a>
     <span class="badge badge-primary">{{ post['created'] }}</span>
     <p>{{ post['content'] }}</p>
-    <style>
-        .button{
-         float: left; /*Задаем обтекание*/
-         text-align: center; /*Центрируем текст по горизонтали*/
-        }
-        .but_1{
-            margin-right: 10px;
-        }
-        but_2{
-            width: 43px;
-            color: white;
-        }
-    </style>
-    <div class = 'button but_1'>
-    <form action="{{ url_for('like', id = post['id']) }}" method="POST">
-        <button type="submit" class="btn btn-danger" ><i class="bi bi-hand-thumbs-up"></i>{{ post['likes'] }}</button>
-    </form>
-    </div>
 
-    <div class = 'button but_2'>
-    <a href="{{ url_for('create_comment', id=post['id']) }}">
-            <h2><span class="badge rounded-pill bg-light text-dark">Add your opinion)</span></h2>
-        </a>
-    <p>{{ post['comment'] }}</p>
-    </div>
+{#    <div class = 'button but_1'>#}
+{#    <form action="{{ url_for('like', id = post['id']) }}" method="POST">#}
+{#        <button type="submit" class="btn btn-danger" ><i class="bi bi-hand-thumbs-up"></i>{{ post['likes'] }}</button>#}
+{#    </form>#}
+{#    </div>#}
+
+    <h3>Comments</h3>
+    <a href="{{ url_for('create_comment', post_id=post['id']) }}">Add comment</a>
+    {% for comment in comments %}
+        <p>{{ comment.content }}</p>
+        <span class="badge badge-primary">{{ comment['created'] }}</span>
+    {% endfor %}
 {% endblock %}
