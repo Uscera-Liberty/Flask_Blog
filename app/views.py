@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import *
 from app.sql_achemy_repositories import get_post, get_all_posts, update_post, delete_post, add_post, add_user, \
-    get_comments, add_comment, load_user_by_name #get_likes
+    get_comments, add_comment, load_user_by_name, get_likes  # get_likes
 from app.forms import User_registration_form, Comment_creation_form, User_login_form
 
 @app.route('/login')
@@ -29,12 +29,13 @@ def post(post_id):
 
     return render_template('post.html', post=post, comments=comments)
 
-# @app.route('/<int:id>/like', methods=('POST',))
-# def like(id):
-#     post = get_post(id)
-#     likes = post['likes'] + 1
-#     get_likes(id, likes)
-#     return redirect(url_for('post', id=id))
+@app.route('/<int:id>/like', methods=('POST',))
+def like(id):
+    post = get_post(id)
+    post.likes += 1
+    get_likes(id, post.likes)
+    return redirect(url_for('post', post_id=id))
+
 
 @app.route('/<int:post_id>/comments/create', methods=('GET', 'POST'))
 #Так , здесь нужно дописать что:

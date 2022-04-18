@@ -8,11 +8,11 @@
     <span class="badge badge-primary">{{ post['created'] }}</span>
     <p>{{ post['content'] }}</p>
 
-{#    <div class = 'button but_1'>#}
-{#    <form action="{{ url_for('like', id = post['id']) }}" method="POST">#}
-{#        <button type="submit" class="btn btn-danger" ><i class="bi bi-hand-thumbs-up"></i>{{ post['likes'] }}</button>#}
-{#    </form>#}
-{#    </div>#}
+    <div class = 'button but_1'>
+    <form action="{{ url_for('like', id = post['id']) }}" method="POST">
+        <button type="submit" class="btn btn-danger" ><i class="bi bi-hand-thumbs-up"></i>{{ post['likes'] }}</button>
+    </form>
+    </div>
 
     <h3>Comments</h3>
     <a href="{{ url_for('create_comment', post_id=post['id']) }}">Add comment</a>

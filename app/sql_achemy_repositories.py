@@ -95,8 +95,9 @@ def add_user(login, email, password_hash):
     db.session.add(new_user)
     db.session.commit()
 
-# def get_likes(id,likes):
-#     db.session.execute(update(Post)
-#                        .where(Post.id == id)
-#                        .values(likes=likes))
-#     db.session.commit()
+def get_likes(id,likes):
+    db.session.execute(update(Post)
+                       .where(Post.id == id)
+                       .values(likes=likes))
+    db.session.commit()
+
